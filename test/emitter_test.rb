@@ -5,13 +5,9 @@ require_relative '../lib/emitter'
 
 describe Emitter do
 
-  def parser
-    @parser ||= Emitter.new
-  end
-
   it 'accepts motions, switches, and insertions' do
-    parser.process("hellohello\e")
-    assert_equal parser.events, [
+    Emitter.new(events = []).process("hellohello\e")
+    assert_equal events, [
       {:motion=>"h"},
       {:motion=>"e"},
       {:motion=>"l"},
