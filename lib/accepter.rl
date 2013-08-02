@@ -28,7 +28,6 @@ class VimParser
 
   def process(input)
     @data = input.unpack("c*")
-    eof = @data.length
     stack = []
     %% write init;
     %% write exec;
