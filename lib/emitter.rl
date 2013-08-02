@@ -22,7 +22,7 @@
 
 class Emitter
 
-  attr_accessor :head, :tail, :data, :events
+  attr_accessor :data
 
   def initialize(listener=[])
     @events = listener
