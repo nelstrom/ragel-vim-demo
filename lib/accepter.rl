@@ -22,6 +22,8 @@
 
 class VimParser
 
+  attr_accessor :data
+
   def initialize()
     %% write data;
   end
@@ -41,6 +43,3 @@ class VimParser
 
 end
 
-parser = VimParser.new
-puts parser.accept?("helihello\e")
-puts parser.accept?("viw")
