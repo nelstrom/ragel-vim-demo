@@ -2,27 +2,20 @@
   machine emitter;
   action H { @head = p }
   action T { @tail = p }
-  action return { fret; }
-  action push_insert_mode { fcall insert_mode; }
 
-  action EmitMotion { @events << {motion: strokes} }
-  action EmitSwitch { @events << {switch: strokes} }
-  action EmitInput  { @events << {input:  strokes} }
-  action EmitEscape { @events << {escape: '<Esc>' } }
-
-  escape = 27             >H@T @EmitEscape;
-  input  = (any - escape) >H@T @EmitInput;
-  motion = [hjklbwe0]     >H@T @EmitMotion;
-  switch = [iIaAsSoO]     >H@T @EmitSwitch;
+  escape = 27             >H@T @{ @events << {escape: '<Esc>'} };
+  input  = (any - escape) >H@T @{ @events << {input:  strokes} };
+  motion = [hjklbwe0]     >H@T @{ @events << {motion: strokes} };
+  switch = [iIaAsSoO]     >H@T @{ @events << {switch: strokes} };
 
   insert_mode  := (
     input*
-    escape @return
+    escape @{ fret; }
   );
 
   normal_mode  := (
     motion |
-    switch @push_insert_mode
+    switch @{ fcall insert_mode; }
   )*;
 
 }%%
