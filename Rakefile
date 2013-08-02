@@ -1,4 +1,5 @@
-task :default => :compile
+require 'rake/clean'
+CLEAN.include FileList['lib/*.rb', 'lib/*.dot']
 
 desc "Compile each .rl file to .rb"
 task :compile do
@@ -13,3 +14,5 @@ task :visualize do
     system "ragel -Vp #{file} > #{file.ext('.dot')}"
   end
 end
+
+task :default => :compile
