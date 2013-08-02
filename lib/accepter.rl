@@ -1,7 +1,5 @@
 %%{
   machine accepter;
-  action return { fret; }
-  action push_insert_mode { fcall insert_mode; }
 
   escape = 27;
   input  = (any - escape);
@@ -10,12 +8,12 @@
 
   insert_mode  := (
     input*
-    escape @return
+    escape @{ fret; }
   );
 
   normal_mode  := (
     motion |
-    switch @push_insert_mode
+    switch @{ fcall insert_mode; }
   )*;
 
 }%%
