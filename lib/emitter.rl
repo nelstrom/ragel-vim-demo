@@ -3,10 +3,10 @@
   action H { @head = p }
   action T { @tail = p }
 
-  escape = 27             >H@T @{ @events << {escape: '<Esc>'} };
-  input  = (any - escape) >H@T @{ @events << {input:  strokes} };
   motion = [hjklbwe0]     >H@T @{ @events << {motion: strokes} };
   switch = [iIaAsSoO]     >H@T @{ @events << {switch: strokes} };
+  escape = 27             >H@T @{ @events << {escape: '<Esc>'} };
+  input  = (any - escape) >H@T @{ @events << {input:  strokes} };
 
   insert_mode  := (
     input*
