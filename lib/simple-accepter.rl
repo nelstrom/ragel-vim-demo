@@ -22,10 +22,7 @@
 
 class VimParser
 
-  attr_accessor :head, :tail, :data
-
-  def initialize(listener)
-    @events = listener
+  def initialize()
     %% write data;
   end
 
@@ -35,19 +32,15 @@ class VimParser
     stack = []
     %% write init;
     %% write exec;
+    return cs
+  end
+
+  def accept?(input)
+    process(input) > 0
   end
 
 end
 
-VimParser.new(recorder = []).process("helihello\e")
-puts recorder
-# {:motion=>"h"}
-# {:motion=>"e"}
-# {:motion=>"l"}
-# {:switch=>"i"}
-# {:input=>"h"}
-# {:input=>"e"}
-# {:input=>"l"}
-# {:input=>"l"}
-# {:input=>"o"}
-# {:escape=>"<Esc>"}
+parser = VimParser.new
+puts parser.accept?("helihello\e")
+puts parser.accept?("viw")
