@@ -1,10 +1,10 @@
 %%{
   machine accepter;
 
-  escape = 27;
-  input  = (any - escape);
   motion = [hjklbwe0];
   switch = [iIaAsSoO];
+  escape = 27;
+  input  = (any - escape);
 
   insert_mode  := (
     input*
