@@ -18,7 +18,7 @@
 
 }%%
 
-class VimParser
+class Accepter
 
   attr_accessor :data
 
