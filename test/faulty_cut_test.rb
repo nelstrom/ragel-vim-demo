@@ -1,12 +1,12 @@
 gem "minitest"
 require 'minitest/autorun'
 require 'minitest/pride'
-require_relative '../lib/cut'
+require_relative '../lib/faulty_cut'
 
-describe CutAccepter do
+describe FaultyCutAccepter do
 
   def cutter
-    @cutter ||= CutAccepter.new
+    @cutter ||= FaultyCutAccepter.new
   end
 
   it 'accepts x' do
@@ -18,8 +18,8 @@ describe CutAccepter do
     assert cutter.accept?('3"a2x')
   end
 
-  it "doesn't accept double-digit counts" do
-    assert cutter.reject?('22x')
+  it "shouldn't accept double-digit counts" do
+    assert cutter.reject?('22x'), "[count][register][count]x"
   end
 
 end

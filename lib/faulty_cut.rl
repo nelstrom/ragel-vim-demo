@@ -1,14 +1,12 @@
 %%{
-  machine cut;
+  machine faulty_cut;
 
   count       = [1-9];
   cut         = 'x';
   register    = '"' [a-z];
   cut_command =
-    (
-      count?
-      register
-    )?
+    count?
+    register?
     count?
     cut;
 
@@ -16,7 +14,7 @@
 
 }%%
 
-class CutAccepter
+class FaultyCutAccepter
 
   attr_accessor :data
 
