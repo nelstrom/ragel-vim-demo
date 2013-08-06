@@ -12,13 +12,22 @@
   cmdline_input  = (any - (escape|ctrl_R|enter)) >H@T @{ @events << {input:  strokes} };
   exp_reg= ctrl_R '='     >H@T @{ @events << {exp_reg:'<C-r>='} };
 
+  start_cmdline = ':'            >H@T @{ @events << {start_cmdline:  strokes} };
   start_visual = 'v'             >H@T @{ @events << {start_visual:  strokes} };
   text_object  = ([ai][bBpstwW]) >H@T @{ @events << {text_object:  strokes} };
   v_switch = [sScC]              >H@T @{ @events << {switch:  strokes} };
 
   expression_register_mode := (
     cmdline_input*
-    enter @{ fret; }
+    (enter | escape) @{ fret; }
+  );
+
+  cmdline_mode := (
+    (
+      exp_reg @{ fcall expression_register_mode; } |
+      cmdline_input
+    )*
+    (enter | escape) @{ fret; }
   );
 
   insert_mode  := (
@@ -40,7 +49,8 @@
   normal_mode  := (
     motion |
     switch @{ fcall insert_mode; } |
-    start_visual @{ fcall visual_mode; }
+    start_visual @{ fcall visual_mode; } |
+    start_cmdline @{ fcall cmdline_mode; }
   )*;
 
 }%%
