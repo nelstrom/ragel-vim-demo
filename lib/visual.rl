@@ -18,10 +18,12 @@
   );
 
   visual_mode := (
-    text_object |
-    v_switch @{ fnext insert_mode; } |
-    escape @{ fret; }
-  )*;
+    ( motion | text_object )*
+    (
+      v_switch @{ fnext insert_mode; } |
+      escape @{ fret; }
+    )
+  );
 
   normal_mode  := (
     motion |
