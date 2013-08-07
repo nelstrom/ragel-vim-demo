@@ -13,6 +13,24 @@ describe Vim do
     Vim.new(@events).process(text)
   end
 
+  describe 'normal mode' do
+
+    it "simple motions are recognised" do
+      scan("hjklbwe0")
+      assert_equal [
+        {motion: 'h'},
+        {motion: 'j'},
+        {motion: 'k'},
+        {motion: 'l'},
+        {motion: 'b'},
+        {motion: 'w'},
+        {motion: 'e'},
+        {motion: '0'},
+      ], @events
+    end
+
+  end
+
   describe 'command line mode' do
 
     it 'aborts on <Esc>' do
