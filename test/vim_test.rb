@@ -31,6 +31,77 @@ describe Vim do
 
   end
 
+  describe 'insert mode' do
+
+    it 'accepts any character until <Esc>' do
+      scan("iHello,\rWorld!\e")
+      assert_equal [
+        {switch: 'i'},
+        {input: 'H'},
+        {input: 'e'},
+        {input: 'l'},
+        {input: 'l'},
+        {input: 'o'},
+        {input: ','},
+        {input: "\r"},
+        {input: 'W'},
+        {input: 'o'},
+        {input: 'r'},
+        {input: 'l'},
+        {input: 'd'},
+        {input: '!'},
+        {escape:'<Esc>'}
+      ], @events
+    end
+
+  end
+
+  describe 'visual mode' do
+
+    it "simple motions are recognised" do
+      scan("vhjklbwe0\e")
+      assert_equal [
+        {start_visual: 'v'},
+        {motion: 'h'},
+        {motion: 'j'},
+        {motion: 'k'},
+        {motion: 'l'},
+        {motion: 'b'},
+        {motion: 'w'},
+        {motion: 'e'},
+        {motion: '0'},
+        {:escape=>"<Esc>"}
+      ], @events
+    end
+
+    it "text objects are recognised" do
+      scan("vawiwabib\e")
+      assert_equal [
+        {start_visual: 'v'},
+        {text_object: 'aw'},
+        {text_object: 'iw'},
+        {text_object: 'ab'},
+        {text_object: 'ib'},
+        {:escape=>"<Esc>"}
+      ], @events
+    end
+
+    it "switch to insert mode" do
+      scan("vchello\e")
+      assert_equal [
+        {start_visual: 'v'},
+        {switch: 'c'},
+        {input: 'h'},
+        {input: 'e'},
+        {input: 'l'},
+        {input: 'l'},
+        {input: 'o'},
+        {:escape=>"<Esc>"}
+      ], @events
+    end
+
+  end
+
   describe 'command line mode' do
 
     it 'aborts on <Esc>' do
