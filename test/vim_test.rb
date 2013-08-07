@@ -5,34 +5,84 @@ require_relative '../lib/vim'
 
 describe Vim do
 
-  def ctrl_R
-    "\x12" # Ruby string notation for <C-r>
+  before do
+    @events = []
   end
 
-  it 'can switch from insert mode to expression register and back' do
-    Vim.new(events = []).process("A#{ctrl_R}=1+1\r\e")
-    assert_equal events, [
-      {:switch=>"A"},
-      {:exp_reg=>"<C-r>="},
-      {:input=>"1"},
-      {:input=>"+"},
-      {:input=>"1"},
-      {:enter=>"<Enter>"},
-      {:escape=>"<Esc>"}
-    ]
+  def scan(text)
+    Vim.new(@events).process(text)
   end
 
-  it 'can switch from cmdline mode to expression register and back' do
-    Vim.new(events = []).process(":#{ctrl_R}=1+1\r\r")
-    assert_equal events, [
-      {:start_cmdline=>":"},
-      {:exp_reg=>"<C-r>="},
-      {:input=>"1"},
-      {:input=>"+"},
-      {:input=>"1"},
-      {:enter=>"<Enter>"},
-      {:enter=>"<Enter>"}
-    ]
+  describe 'command line mode' do
+
+    it 'aborts on <Esc>' do
+      scan(":\e")
+      assert_equal [
+        {:start_cmdline=>":"},
+        {:escape=>"<Esc>"}
+      ], @events
+    end
+
+    it 'aborts a simple ":write" command' do
+      scan(":write\e")
+      assert_equal [
+        {:start_cmdline=>":"},
+        {:input => "w"},
+        {:input => "r"},
+        {:input => "i"},
+        {:input => "t"},
+        {:input => "e"},
+        {:escape=>"<Esc>"}
+      ], @events
+    end
+
+    it "executes a simple ':write' command" do
+      scan(":write\r")
+      assert_equal [
+        {:start_cmdline=>":"},
+        {:input => "w"},
+        {:input => "r"},
+        {:input => "i"},
+        {:input => "t"},
+        {:input => "e"},
+        {:enter=>"<Enter>"}
+      ], @events
+    end
+
   end
 
+  describe 'expression register' do
+
+    def ctrl_R
+      "\x12" # Ruby string notation for <C-r>
+    end
+
+    it 'can switch from insert mode to expression register and back' do
+      scan("A#{ctrl_R}=1+1\r\e")
+      assert_equal [
+        {:switch=>"A"},
+        {:exp_reg=>"<C-r>="},
+        {:input=>"1"},
+        {:input=>"+"},
+        {:input=>"1"},
+        {:enter=>"<Enter>"},
+        {:escape=>"<Esc>"}
+      ], @events
+    end
+
+    it 'can switch from cmdline mode to expression register and back' do
+      scan(":#{ctrl_R}=1+1\r\r")
+      assert_equal [
+        {:start_cmdline=>":"},
+        {:exp_reg=>"<C-r>="},
+        {:input=>"1"},
+        {:input=>"+"},
+        {:input=>"1"},
+        {:enter=>"<Enter>"},
+        {:enter=>"<Enter>"}
+      ], @events
+    end
+
+
+  end
 end
